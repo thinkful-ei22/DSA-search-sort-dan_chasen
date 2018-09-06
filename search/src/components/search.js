@@ -6,7 +6,8 @@ export default class Search extends React.Component {
     this.state = {
       value: '',
       list: '',
-      message: ''
+      messageLinear: '',
+      messageBinary: ''
     };
   }
 
@@ -14,18 +15,20 @@ export default class Search extends React.Component {
     e.preventDefault();
     let value = this.value.value.toString();
     let list = this.list.value.split(' ');
-    let message = linearSearch(list, value);
+    let messageLinear = linearSearch(list, value);
+    let messageBinary = binarySearch(list, value);
     this.setState({
-      value, list, message
+      value, list, messageLinear, messageBinary
     });
   }
   
   render(){
     return (
       <main>
-        <h1>Linear Search</h1>
+        <h1>Linear and Binary Search Comparison</h1>
 
-        <p>{this.state.message}</p>
+        <p>{this.state.messageLinear? `Linear: ${this.state.messageLinear}`: ''}</p>
+        <p>{this.state.messageLinear? `Binary: ${this.state.messageBinary}`: ''}</p>
 
         <form onSubmit={(e) => this.handleSubmit(e)}>
           <label htmlFor="value">Value: </label>
@@ -52,4 +55,25 @@ function linearSearch(array, value) {
     }
   }
   return `item not found, count: ${count}`;
+}
+
+function binarySearch(array, value, start, end, count=1){
+  start= start === undefined ? 0: start;
+  end = end === undefined ? array.length-1 : end;
+  if(start>end){
+    return `item not found, count: ${count}`;;
+  }
+
+  let mid= Math.floor((start + end) / 2);
+  let item = array[mid];
+
+  if(item === value){
+    return `index: ${mid}, count: ${count}`;
+  }
+  else if(item < value){
+    return binarySearch(array, value, mid+1, end, count+1);
+  }
+  else if(item> value){
+    return binarySearch(array, value, start, mid - 1, count+1);
+  }
 }
